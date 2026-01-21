@@ -43,9 +43,8 @@ export default function TrevonixMarketplace() {
     qty: item.qty
   })), [cart]);
 
-  const subtotal = cartDetails.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const hst = formData.country === "Canada" ? subtotal * 0.13 : 0;
-  const total = subtotal + hst;
+  // --- FINANCIAL CALCULATION (TAX REMOVED) ---
+  const total = cartDetails.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
   const handleAddToCart = (id: string) => {
     const ex = cart.find(i => i.id === id);
@@ -72,14 +71,11 @@ export default function TrevonixMarketplace() {
       const data = await response.json();
       if (data.url) window.location.href = data.url;
       else { alert("Validation Error: " + (data.error || "Please verify your contact details.")); setIsProcessing(false); }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) { setIsProcessing(false); }
   };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100">
-      
-      {/* NAVIGATION */}
       <nav className="sticky top-0 z-[100] bg-white border-b border-slate-100 px-6 py-5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => {setView('shop'); setStep(1);}}>
@@ -87,7 +83,6 @@ export default function TrevonixMarketplace() {
               <span className="font-black text-blue-600 tracking-tighter uppercase block leading-none">Trevonix<span className="text-blue-600"> OU</span></span>
             </div>
           </div>
-          
           <button onClick={() => setView('checkout')} className="flex items-center gap-3 bg-slate-50 hover:bg-slate-100 px-5 py-2.5 rounded-xl transition-all border border-slate-200">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">Review Manifest</span>
             <ShoppingBag className="w-4 h-4 text-blue-600" />
@@ -108,8 +103,7 @@ export default function TrevonixMarketplace() {
                 Your Renovation, Made <br/><span className="text-slate-300">Simple.</span>
               </h1>
               <p className="text-slate-500 max-w-xl text-xs leading-relaxed uppercase tracking-widest font-bold">
-                We connect you with trusted renovation and interior design professionals. Whether you&apos;re upgrading your home, office, or investment property, our team ensures you get the best design ideas, reliable contractors,
-                 and smooth project management — all in one place.
+                We connect you with trusted renovation and interior design professionals.
               </p>
             </header>
 
@@ -126,14 +120,8 @@ export default function TrevonixMarketplace() {
                       <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Asset TX-{p.id.padStart(3, '0')}</span>
                       {isInCart && <div className="bg-blue-600 text-white text-[9px] font-black px-2 py-0.5 rounded">Active x{isInCart.qty}</div>}
                     </div>
-                    
-                    <h3 className="text-2xl font-black text-black tracking-tighter uppercase mb-4 leading-tight group-hover:text-blue-600">
-                      {p.name}
-                    </h3>
-                    <p className="text-slate-700 text-sm leading-relaxed font-bold mb-8 flex-grow">
-                      {p.desc}
-                    </p>
-
+                    <h3 className="text-2xl font-black text-black tracking-tighter uppercase mb-4 leading-tight group-hover:text-blue-600">{p.name}</h3>
+                    <p className="text-slate-700 text-sm leading-relaxed font-bold mb-8 flex-grow">{p.desc}</p>
                     <div className="pt-6 border-t border-slate-50 flex justify-between items-center">
                       <span className="text-2xl font-black text-black tracking-tight">${p.price.toLocaleString()}</span>
                       <Plus className="w-5 h-5 text-slate-300 group-hover:text-blue-600" />
@@ -144,10 +132,8 @@ export default function TrevonixMarketplace() {
             </div>
           </div>
         ) : (
-          /* CHECKOUT LOGIC REMAINS UNCHANGED */
           <div className="grid lg:grid-cols-12 gap-12 animate-in slide-in-from-bottom-4 duration-500">
             <div className="lg:col-span-7">
-              {/* Stepper and Form logic same as your previous stable version */}
               <div className="flex items-center gap-6 mb-12">
                 {[
                   { s: 1, icon: <User className="w-3 h-3"/>, label: 'Contact' },
@@ -209,7 +195,6 @@ export default function TrevonixMarketplace() {
               )}
             </div>
 
-            {/* SIDEBAR SUMMARY */}
             <div className="lg:col-span-5">
               <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 sticky top-32">
                 <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-8">Current Manifest</h3>
@@ -232,17 +217,9 @@ export default function TrevonixMarketplace() {
                 </div>
 
                 <div className="pt-6 border-t border-slate-200 space-y-4">
-                  <div className="flex justify-between text-[11px] font-black text-slate-400 uppercase tracking-widest">
-                    <span>Subtotal</span>
-                    <span className="text-black">${subtotal.toLocaleString()}</span>
-                  </div>
-                  {formData.country === "Canada" && (
-                    <div className="flex justify-between text-[11px] font-black text-blue-600 uppercase tracking-widest">
-                      <span>HST (13%)</span>
-                      <span>${hst.toLocaleString()}</span>
-                    </div>
-                  )}
+                  {/* TAX DISPLAY REMOVED ENTIRELY */}
                   <div className="flex justify-between items-end pt-4">
+                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest pb-2">Total Amount</span>
                     <span className="text-4xl font-black text-black tracking-tighter italic">${total.toLocaleString()}</span>
                   </div>
                 </div>
@@ -255,6 +232,7 @@ export default function TrevonixMarketplace() {
   );
 }
 
+// Sub-components remain unchanged...
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function InputField({ label, placeholder, type = "text", value, onChange }: any) {
   return (
